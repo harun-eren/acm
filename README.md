@@ -10,4 +10,4 @@ DOI: 10.1177/0022002797041002001
 
 Project advisor: Prof Haluk O. Bingöl, Bogazici University
 
-Student: Harun Eren
+Harun Eren
