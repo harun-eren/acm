@@ -1,13 +1,12 @@
 import random
-
+import numpy as np
+import visualization
 
 # Simulation constraints
 # L is even number (assumption)
 # 0 <= x <= L/2
 # 0 <= w <= L
-# 0 <= y
-# if w <= L/2 then 0 <= w+y <= L/2
-# else y = 0
+# 0 <= y <= ceiling ((L-w) / 2)
 
 class Simulation:
     L = 0  # length of one size, where population size is LxL
@@ -16,7 +15,9 @@ class Simulation:
     x = 0  # length of obstacle, where x <= L/2
     y = 0  # location of window
     w = 0  # window size, where 0 <= w <=L
+    num_of_realization = 1
     population = []  # population
+    data = []
 
     def __init__(self, L, F, q):
         self.L = L
@@ -34,30 +35,30 @@ class Simulation:
                     indv.append(random.randint(1,self.q))
                 row.append(indv)
             ppl.append(row)
+        # self.population = np.array(ppl)
         self.population = ppl
 
     # get neighbors that the given indv can interact, based on its location
-    def get_neighbors(self, indv_i, indv_j):
+    def get_neighbors(self, indv_j, indv_i):
         neighbors = []
         if indv_j > 0:
-            neighbors.append(self.population[indv_i][indv_j - 1])
+            neighbors.append(self.population[indv_j - 1][indv_i])
 
         if indv_j < (self.L - 1):
-            neighbors.append(self.population[indv_i][indv_j + 1])
+            neighbors.append(self.population[indv_j + 1][indv_i])
 
         if indv_i > 0:
             if indv_i == self.x:
                 if self.y + self.w > indv_j >= self.y:
-                    neighbors.append(self.population[indv_i - 1][indv_j])
+                    neighbors.append(self.population[indv_j][indv_i - 1])
             else:
-                neighbors.append(self.population[indv_i - 1][indv_j])
+                neighbors.append(self.population[indv_j][indv_i - 1])
         if indv_i < (self.L - 1):
             if indv_i == (self.x - 1):
                 if self.y + self.w > indv_j >= self.y:
-                    neighbors.append(self.population[indv_i + 1][indv_j])
+                    neighbors.append(self.population[indv_j][indv_i + 1])
             else:
-                neighbors.append(self.population[indv_i + 1][indv_j])
-        print(self.x)
+                neighbors.append(self.population[indv_j][indv_i + 1])
         return neighbors
 
     # indv1 interacts with indv2, depending on similarity between them
@@ -79,19 +80,23 @@ class Simulation:
             indv1[rtrait] = indv2[rtrait]
         return indv1
 
-    def run(self, params, step_number):
-        data = []
+    def run(self, params, step_number, num_of_realization):
+        results = []
         self.x = params[0]
         self.y = params[1]
         self.w = params[2]
+        self.num_of_realization = num_of_realization
 
-        for sample in range(5):
+        for sample in range(self.num_of_realization):
             self.initialize_population()
             for step in range(step_number):
                 i = random.randint(0, self.L-1)
                 j = random.randint(0,self.L-1)
-                neighbors = self.get_neighbors(i, j)
+                neighbors = self.get_neighbors(j, i)
                 r_neighbor = random.choice(neighbors)
-                self.population[i][j] = self.interact(self.population[i][j], r_neighbor)
-            data.append(self.population)
-        return data
+                self.population[j][i] = self.interact(self.population[j][i], r_neighbor)
+            results.append(self.population)
+        self.data = results
+        image = visualization.Visualization(self.L, self.F, [self.x, self.y, self.w],results)
+        image.run()
+        return results
