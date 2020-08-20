@@ -1,11 +1,6 @@
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import numpy as np
-import simulation
 from tkinter import Tk, Canvas
 
-class Visualization():
-
+class Grid_Visualization():
 
     size = 620
     edge = 10
@@ -13,7 +8,7 @@ class Visualization():
     def __init__(self, L, F, obstacle, data):
         self.L = L
         self.F = F
-        self.data = data[0]
+        self.data = data
         self.grid_width = (self.size - 2 * self.edge) / self.L
         self.obstacle = obstacle
         print(self.grid_width)
