@@ -2,9 +2,13 @@ import simulation, grid_visualization, math
 
 
 def main():
-    # define L, F, q, x, y, w and k
-    # L : size, F: feature number, q: possible property number
-    # x: position of obstacle, y: position of window, w: window size
+    # define the variables L, F, q, x, y, w and k
+    # L: length of one side of the square area
+    # F: number of cultural features
+    # q: number of possible traits for each feature
+    # x: horizontal position of obstacle,
+    # y: vertical position of the beginning of the window on the obstacle
+    # w: size of the window
 
     L = [8]
     F = [5]
@@ -15,6 +19,7 @@ def main():
     Y = [0,1,2,3]
     W = [1,3,5,7]
 
+    # in case of multiple values, run the simulations for each value of each variable
     for f in F:
         for q in Q:
             for i in range(len(L)):
